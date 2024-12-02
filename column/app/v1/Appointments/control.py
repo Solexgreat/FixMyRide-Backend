@@ -183,7 +183,7 @@ class AppointmentControl(DB):
 
             return available_slots
         except Exception as e:
-            return (e)
+            return str(e)
 
     def available_mechanic(self, date_str: str, time: str):
         """

@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, abort, redirect, render_template, fla
 from werkzeug.exceptions import BadRequest
 # from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from ..column.app.v1.users.control import UserControl
-from Backend.column.app.v1.core.auth import AUTH
+from ..column.app.v1.core.auth import AUTH
 from . import user_bp
 from ..column.app.v1.core.middleware import authenticate
 

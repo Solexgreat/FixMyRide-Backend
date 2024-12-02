@@ -2,7 +2,7 @@ from flask import Flask
 from flask import Flask, jsonify, request, abort, redirect, render_template, flash
 # from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from ..column.app.v1.Appointments.control import AppointmentControl
-from Backend.column.app.v1.core.auth import AUTH
+from ..column.app.v1.core.auth import AUTH
 from . import appointment_bp
 from ..db import DB
 from ..column.app.v1.core.middleware import authenticate
@@ -141,12 +141,11 @@ def available_slots():
         GEt available slots
     """
 
-    data= request.args
-    date = data.get('date')
+    data= request.args.get('date')
     try:
-        available_slots = db.available_time(date)
+        available_slots = db.available_time(data)
         if available_slots :
-            return jsonify (available_slots), 201
+            return jsonify({"available_slots": available_slots}), 201
 
     except Exception as e:
         return jsonify({'msg': str(e)}), 500

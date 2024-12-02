@@ -18,9 +18,10 @@ class ServiceControl(DB):
         services = self._session.query(Service).all()
         return [s.to_dict() for s in services]
 
-    def get_all_category(self)-> dict:
+    def get_all_category(self)-> list:
         """
-            Return all categories as dictionaries
+            Return:
+             List of  all categories as dictionaries
         """
         try:
             services = self._session.query(Service).all()
@@ -31,12 +32,13 @@ class ServiceControl(DB):
         except Exception as e:
             raise Exception(f"Error retrieving categories: {str(e)}")
 
-    def get_category_service(self, category: str)-> dict:
+    def get_category_services(self, category: str)-> list:
         """
-            Return all categories as dictionaries
+            Return:
+                List of all service for the provided category
         """
         try:
-            services = self._session.query(Service).filter(Service.category==category).all
+            services = self._session.query(Service).filter(Service.category==category).all()
             services_dict = [s.to_dict() for s in services]
 
             return services_dict
@@ -54,6 +56,25 @@ class ServiceControl(DB):
         except TypeError:
             raise InvalidRequestError("Invalid arguments provided.")
         return service_id
+
+    def get_popular_service(self) -> list:
+        """
+        Return:
+                A list of popular services
+        """
+        try:
+            popula_services_list = ['Oil change','Brake Pad Replacement', 'Battery Replacement', 'Tire Rotation']
+
+            services = []
+
+            for name in popula_services_list:
+                service = self._session.query(Service).filter(Service.name==name).first()
+                if service:
+                    services.append(service.to_dict())
+
+            return services
+        except Exception as e:
+            raise Exception(e)
 
     def add_service(self, **kwargs: dict) -> dict:
         """Add a service to the session and commit"""

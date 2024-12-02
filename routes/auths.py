@@ -1,8 +1,8 @@
 from flask_mail import Message
 from flask import Flask, jsonify, request, abort, redirect, render_template, flash
 # from flask_login import login_user, logout_user, login_required, current_user, LoginManager
-from Backend.column.app.v1.core.auth import AUTH
-from Backend.column.app.v1.core.security import SECURITY
+from ..column.app.v1.core.auth import AUTH
+from ..column.app.v1.core.security import SECURITY
 from .. import mail
 from . import auth_bp
 
