@@ -158,12 +158,12 @@ class AppointmentControl(DB):
             current_time += 30  # Increment by 30 minutes
         return slots
 
-    def available_time(self, date_str: str):
+    def available_time(self, date_str: str) -> list:
 
         all_slots = self.generate_time_slots(540, 1020)
 
         try:
-            date = datetime.strptime(date_str, "%a, %d %b %Y")
+            date = datetime.strptime(date_str, "%Y-%m-%d")
             start_of_day = datetime.combine(date, datetime.min.time())
             end_of_day = datetime.combine(date, datetime.max.time())
 

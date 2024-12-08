@@ -135,7 +135,7 @@ def delete_sercice(appointment_id):
         return jsonify({'msg': str(e) }), 500
 
 @appointment_bp.route('/available_slots', methods=['GET'], strict_slashes=False)
-@authenticate
+# @authenticate
 def available_slots():
     """
         GEt available slots
@@ -145,7 +145,7 @@ def available_slots():
     try:
         available_slots = db.available_time(data)
         if available_slots :
-            return jsonify({"available_slots": available_slots}), 201
+            return jsonify(available_slots), 201
 
     except Exception as e:
         return jsonify({'msg': str(e)}), 500

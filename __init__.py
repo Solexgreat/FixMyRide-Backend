@@ -3,12 +3,16 @@ from flask_jwt_extended import JWTManager
 from .config import Config
 from .db import DB
 from flask_mail import Mail
+from flask_cors import CORS
 
 mail = Mail()
 
 
 def create_app():
 	app = Flask(__name__)
+
+	CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+
 
 	# Load configuration from config class
 	app.config.from_object(Config)

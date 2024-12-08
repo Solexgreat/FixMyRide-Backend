@@ -23,5 +23,6 @@ class Service(Base):
             'price': self.price,
             'description': self.description,
             'category': self.category,
-            'service_id': self.service_id
+            'service_id': self.service_id,
+            'image': self.image_url
         }

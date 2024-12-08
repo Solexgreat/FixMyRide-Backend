@@ -63,7 +63,7 @@ class ServiceControl(DB):
                 A list of popular services
         """
         try:
-            popula_services_list = ['Oil change','Brake Pad Replacement', 'Battery Replacement', 'Tire Rotation']
+            popula_services_list = ['Oil Change','Brake Pad Replacement', 'Battery Replacement', 'Tire Rotation']
 
             services = []
 

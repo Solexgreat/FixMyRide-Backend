@@ -31,7 +31,7 @@ def get_service() -> str:
         return jsonify({'error': str(e)}), 500
 
 @service_bp.route('/pupolar_services', methods=['GET'], strict_slashes=False)
-@authenticate
+# @authenticate
 def get_popular_service() -> str:
     """Return all service
     """
@@ -41,25 +41,25 @@ def get_popular_service() -> str:
         #     return jsonify({'msg': "Not authorized"}), 403
 
         services = service_control.get_popular_service()
-        return jsonify({'services': services}), 200
+        return jsonify(services), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
 @service_bp.route('/categories', methods=['GET'], strict_slashes=False)
-@authenticate
+# @authenticate
 def get_categories()-> dict:
     """
         Return all categories
     """
     try:
         categories = service_control.get_all_category()
-        return jsonify({'categories': categories}), 200
+        return jsonify(categories), 200
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
 @service_bp.route('/category_services', methods=['GET'], strict_slashes=False)
-@authenticate
+# @authenticate
 def get_category_services():
     """
         Return all categories
@@ -67,7 +67,7 @@ def get_category_services():
     data = request.args.get('category')
     try:
         services = service_control.get_category_services(data)
-        return jsonify({'services': services}), 200
+        return jsonify(services), 200
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
