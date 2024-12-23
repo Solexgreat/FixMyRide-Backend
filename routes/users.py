@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request, abort, redirect, render_template, fla
 from werkzeug.exceptions import BadRequest
 # from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from ..column.app.v1.users.control import UserControl
+from ..column.app.v1.users.model import UserTypeEnum
 from ..column.app.v1.core.auth import AUTH
 from . import user_bp
 from ..column.app.v1.core.middleware import authenticate
@@ -9,6 +10,7 @@ from ..column.app.v1.core.middleware import authenticate
 
 DB = UserControl()
 auth = AUTH()
+User_Type_Enum = UserTypeEnum()
 
 
 # @login_manager.user_loader
@@ -48,7 +50,7 @@ def register_users() -> str:
 
 
 @user_bp.route('/user', methods=['GET'], strict_slashes = False)
-
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def get_users() -> str:
     """Return all users
     """

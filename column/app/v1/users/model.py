@@ -5,7 +5,10 @@ from .....db import Base
 from ..Services.model import Service
 # from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 
-
+class UserTypeEnum:
+    ADMIN = "admin"
+    USER = "user"
+    GUEST = "guest"
 
 class User(Base):
     __tablename__ = 'users'
@@ -21,7 +24,10 @@ class User(Base):
     token_expiration = Column(DateTime(), nullable=True)
     session_expiration= Column(DateTime(), nullable=True)
     is_active = Column(Boolean(), default=True)
-    role = Column(Enum('admin', 'mechanic', 'customer'), nullable=False)
+    user_type = Column(
+        Enum(UserTypeEnum.ADMIN, UserTypeEnum.USER, UserTypeEnum.GUEST, name="user_type_enum"),
+        nullable=False
+    )
 
 
     def to_dict(self):

@@ -6,15 +6,17 @@ from ..column.app.v1.core.auth import AUTH
 from . import appointment_bp
 from ..db import DB
 from ..column.app.v1.core.middleware import authenticate
+from ..column.app.v1.users.model import UserTypeEnum
 
 
+User_Type_Enum = UserTypeEnum()
 db_instance = DB()
 db = AppointmentControl()
 auth = AUTH()
 
 
 @appointment_bp.route('/appointments', methods=['POST'], strict_slashes = False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def Create_appointment() -> str:
     """POST /appoitments
        Return:
@@ -39,7 +41,7 @@ def Create_appointment() -> str:
         return jsonify({'msg': 'Internal error', 'error': str(e)}), 500
 
 @appointment_bp.route('/appointment/history', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_history() -> str:
     """Render the appointment history page"""
     try:
@@ -52,7 +54,7 @@ def appointment_history() -> str:
         return jsonify({'error' : str(e)}), 500
 
 @appointment_bp.route('/history_between', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_history_between() -> str:
     """Render the appointment history page"""
     try:
@@ -71,7 +73,7 @@ def appointment_history_between() -> str:
         return jsonify({'error' : str(e)}), 500
 
 @appointment_bp.route('/completed_history_between', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_completed_between() -> str:
     """Render the appointment history page"""
     try:
@@ -90,7 +92,7 @@ def appointment_completed_between() -> str:
         return jsonify({'error' : str(e)}), 500
 
 @appointment_bp.route('/appointment/<int:appointment_id>', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def get_appointment(appointment_id) -> str:
     """Return json of all appointments
     """
@@ -104,7 +106,7 @@ def get_appointment(appointment_id) -> str:
         return jsonify({'error': f'{e}'}), 500
 
 @appointment_bp.route('/update_appointment/<int:appointment_id>', methods=['PUT'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def update_appointment(appointment_id) -> str:
     """Return json of all appointments
     """
@@ -121,7 +123,7 @@ def update_appointment(appointment_id) -> str:
 
 
 @appointment_bp.route('/delete/<int:appointment_id>', methods=['DELETE'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def delete_sercice(appointment_id):
     """
         delete service via service_id
@@ -151,7 +153,7 @@ def available_slots():
         return jsonify({'msg': str(e)}), 500
 
 @appointment_bp.route('/available_mechanics', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def available_mechanics():
     """
         GEt available mechanics

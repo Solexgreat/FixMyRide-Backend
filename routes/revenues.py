@@ -7,16 +7,18 @@ from ..column.app.v1.core.auth import AUTH
 from ..db import DB
 from . import revenue_bp
 from ..column.app.v1.core.middleware import authenticate
+from ..column.app.v1.users.model import UserTypeEnum
 
 
 
+User_Type_Enum = UserTypeEnum()
 db = RevenueControl()
 db_instance = DB()
 AUTH = AUTH()
 
 
 @revenue_bp.route('/revenue', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.USER])
 def get_revenue() -> str:
     """Return all the Revenue property
     """

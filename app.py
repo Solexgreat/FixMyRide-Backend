@@ -1,6 +1,6 @@
 from flask import Flask
 import sys
-from Backend import create_app
+from Backend import create_app, db
 from flask_migrate import Migrate
 
 app = create_app()

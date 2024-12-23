@@ -6,8 +6,10 @@ from ..column.app.v1.core.auth import AUTH
 from . import repair_bp
 from ..db import DB
 from ..column.app.v1.core.middleware import authenticate
+from ..column.app.v1.users.model import UserTypeEnum
 
 
+User_Type_Enum = UserTypeEnum()
 db_instance = DB()
 db = RepairControl()
 AUTH = AUTH()
@@ -15,7 +17,7 @@ AUTH = AUTH()
 
 
 @repair_bp.route('/repairs', methods=['GET'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def get_repairs() -> str:
     """Return json of all repairs
     """
@@ -30,7 +32,7 @@ def get_repairs() -> str:
         return jsonify({'error': str(e)})
 
 @repair_bp.route('/create-repair', methods=['POST'], strict_slashes = False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def create_repairs() -> str:
     """POST /repairs
        Return: Jsonify(message) status 200
@@ -63,7 +65,7 @@ def create_repairs() -> str:
             return jsonify({'msg': err_msg, 'error': str(e)}), 500
 
 @repair_bp.route('/delete/<int:repair_id>', methods=['DELETE'], strict_slashes=False)
-@authenticate
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def delete_revenue(repair_id):
     """
         delete service via revenue id
