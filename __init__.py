@@ -1,11 +1,18 @@
 from flask import Flask
+import os
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 from .config import Config
 from .db import DB
 from flask_mail import Mail
 from flask_cors import CORS
+from flask_migrate import Migrate
 
+
+db = SQLAlchemy()
 mail = Mail()
+migrate = Migrate()
+
 
 
 def create_app():
@@ -28,8 +35,12 @@ def create_app():
 
 
 	# # Initialize the database and attach it to the app
-	db = DB()
-	app.db = db
+	app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+	db.init_app(app)
+
+	# Initialize Flask-Migrate
+	migrate.init_app(app, db)
 
 
 	from .routes import user_bp, service_bp, appointment_bp, repair_bp, revenue_bp, auth_bp  # Import your blueprints

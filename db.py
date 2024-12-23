@@ -1,5 +1,3 @@
-"""DB module
-"""
 import os
 from sqlalchemy import create_engine, text
 from sqlalchemy.ext.declarative import declarative_base
@@ -12,11 +10,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-
-
 load_dotenv()
-
-
 Base = declarative_base()
 
 
