@@ -18,11 +18,12 @@ User_Type_Enum = UserTypeEnum()
 
 
 @service_bp.route('/', methods=['GET'], strict_slashes=False)
-@authenticate(roles=[User_Type_Enum.ADMIN])
+# @authenticate(roles=[User_Type_Enum.ADMIN])
 def get_service() -> str:
     """Return all service
     """
     try:
+        # db_instance.add_column('service', 'image_url', 'TEXT')
         # user = request.user
         # if user.role != 'admin':
         #     return jsonify({'msg': "Not authorized"}), 403
@@ -97,8 +98,6 @@ def create_service() ->str:
     try:
         if not data:
             return jsonify({'msg': 'Expecting data'}), 400
-
-        # db_instance.add_column('service', 'description', 'TEXT')
 
         service_list = [service_control.add_service(**services) for services in data]
         service_list = [service['service_id'] for service in service_list  ]

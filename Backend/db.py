@@ -47,3 +47,11 @@ class DB:
         """Removes a column from an existing table."""
         with self._engine.connect() as connection:
             connection.execute(text(f"ALTER TABLE {table_name} DROP COLUMN {column_name};"))
+
+    def create_enum_type(engine, enum_name, values):
+        """Creates an ENUM type in the database."""
+        values_clause = ", ".join(f"'{value}'" for value in values)
+        with engine.connect() as connection:
+            connection.execute(
+                text(f"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = '{enum_name}') THEN CREATE TYPE {enum_name} AS ENUM ({values_clause}); END IF; END $$;")
+            )
