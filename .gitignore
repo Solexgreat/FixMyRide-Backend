@@ -1,9 +1,0 @@
-FMR.db
-/Backend/FMR.db
-__pycache__
-/myenv
-.env
-/Backend/myenv
-/Backend/__pycache__
-app.log
-package-lock.json
