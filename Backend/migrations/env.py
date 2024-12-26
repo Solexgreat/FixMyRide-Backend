@@ -1,5 +1,6 @@
 import logging
 from logging.config import fileConfig
+from Backend.db import DB, Base
 
 from flask import current_app
 import os
@@ -8,6 +9,8 @@ from alembic import context
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
 
 
 # this is the Alembic Config object, which provides
@@ -29,7 +32,7 @@ def get_engine():
         return current_app.extensions['migrate'].db.get_engine()
     except (TypeError, AttributeError):
         # this works with Flask-SQLAlchemy>=3
-        return current_app.extensions['migrate'].db.engine
+        return current_app.db.engine
 
 
 def get_engine_url():
@@ -45,7 +48,7 @@ def get_engine_url():
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 config.set_main_option('sqlalchemy.url', get_engine_url())
-target_db = current_app.extensions['migrate'].db
+target_db = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -56,7 +59,7 @@ target_db = current_app.extensions['migrate'].db
 def get_metadata():
     if hasattr(target_db, 'metadatas'):
         return target_db.metadatas[None]
-    return target_db.metadata
+    return target_db
 
 
 def run_migrations_offline():

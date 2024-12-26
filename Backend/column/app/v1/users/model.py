@@ -8,7 +8,7 @@ from ..Services.model import Service
 class UserTypeEnum:
     ADMIN = "admin"
     USER = "user"
-    GUEST = "guest"
+    MECHANIC = "mechanic"
 
 class User(Base):
     __tablename__ = 'users'
@@ -25,7 +25,7 @@ class User(Base):
     session_expiration= Column(DateTime(), nullable=True)
     is_active = Column(Boolean(), default=True)
     user_type = Column(
-        Enum(UserTypeEnum.ADMIN, UserTypeEnum.USER, UserTypeEnum.GUEST, name="user_type_enum"),
+        Enum(UserTypeEnum.ADMIN, UserTypeEnum.USER, UserTypeEnum.MECHANIC, name="user_type_enum"),
         nullable=False
     )
 

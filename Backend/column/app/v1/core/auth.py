@@ -3,6 +3,7 @@ from ..users.model import User
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 import bcrypt
+import base64
 from datetime import datetime, timedelta
 from .security import _hash_password, SECURITY
 
@@ -41,7 +42,7 @@ class AUTH:
             hash_pwd = _hash_password(password)
 
             # Generate session
-            session_expiration = datetime.now() + timedelta(hours=24)
+            session_expiration = datetime.now() + timedelta(days=2)
             session_id = security.create_session()
 
             #remove password from kwargs if already their to avoid duplication
@@ -79,16 +80,14 @@ class AUTH:
                 user = self._db.find_user('user_name', user_name)
             if not user_name:
                 user = self._db.find_user('email', email)
-
             if user is None:
                 raise ValueError('User does not exist')
 
-            user_pwd = user.password
-            if user_pwd is None:
-                raise ValueError('User_pwd is empty')
             #verify if the entered password is correct
+            hash_pwd = user.password
+            hash_pwd_bytes = base64.b64decode(hash_pwd)
             password = kwargs.get('password')
-            if bcrypt.checkpw(password.encode('utf-8'), user_pwd):
+            if bcrypt.checkpw(password.encode('utf-8'), hash_pwd_bytes):
                 session_id = security.create_session()
                 session_expiration = datetime.now() + timedelta(hours=24)
 
@@ -101,10 +100,10 @@ class AUTH:
                 raise InvalidRequestError(f'Invalid Password')
 
         except (InvalidRequestError) as e:
-            # logger.exception("Database error:", user_pwd, exc_info=e)
+            logger.exception("Database error:", hash_pwd, exc_info=e)
             raise Exception(f'{e}')
         except Exception as e:
-            # logger.exception("Database error:", user_pwd, exc_info=e,)
+            logger.exception("Database error:", hash_pwd, exc_info=e,)
             raise Exception(f'{e}')
 
     def get_current_user(self, session_id: str) -> User:

@@ -6,6 +6,7 @@ from sqlalchemy.exc import InvalidRequestError
 import uuid
 import bcrypt
 from datetime import datetime, timedelta
+import base64
 # from ..... import run
 # from itsdangerous import URLSafeTimedSerializer
 
@@ -18,7 +19,8 @@ def _hash_password(password: str) -> bytes:
     """
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed
+    hashed_b64 = base64.b64encode(hashed).decode('utf-8')
+    return hashed_b64
 
 def _generate_uuid():
     """Generate and return

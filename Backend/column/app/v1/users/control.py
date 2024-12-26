@@ -46,7 +46,7 @@ class UserControl(DB):
         except Exception as e:
             self._session.rollback()
             raise e
-        return [u.to_dict() for u in user]
+        return user.to_dict()
 
     def find_user(self, field: str, value: str) -> User:
         """Find a user by provided criteria (e.g., email or user_name) and return the user"""
