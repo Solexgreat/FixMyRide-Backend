@@ -28,7 +28,7 @@ def register_user() -> str:
     data = request.get_json()
     try:
         user = auth.register_user(**data)
-        return jsonify({'msg': f'{user.user_name} created successfully'}), 201
+        return jsonify({'msg': f"{user['user_name']}, created successfully"}), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
@@ -36,7 +36,7 @@ def register_user() -> str:
 
 @user_bp.route('/add-users', methods=['POST'], strict_slashes=False)
 def register_users() -> str:
-    """Creat new user
+    """Creat new users
     """
     data = request.get_json()
     try:

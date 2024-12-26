@@ -51,10 +51,8 @@ def create_app():
 	app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 	app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-	app.db = db_instance
-
-	# Register teardown function
-	app.teardown_appcontext(db_instance.teardown)
+	# Database setup
+	db_instance.init_app(app)
 
 	# Initialize Flask-Migrate with the app and the custom database instance
 	migrate.init_app(app, db_instance)

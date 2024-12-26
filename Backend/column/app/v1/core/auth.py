@@ -18,7 +18,7 @@ class AUTH:
     def __init__(self) -> None:
         self._db = DB
 
-    def register_user(self, **kwargs) -> User:
+    def register_user(self, **kwargs) -> dict:
         """Find user via there email info
            add_user and return new_user
         """
@@ -89,7 +89,7 @@ class AUTH:
             password = kwargs.get('password')
             if bcrypt.checkpw(password.encode('utf-8'), hash_pwd_bytes):
                 session_id = security.create_session()
-                session_expiration = datetime.now() + timedelta(hours=24)
+                session_expiration = datetime.now() + timedelta(days=2)
 
                 kwargs.pop('session_id', None)
                 kwargs.pop('session_expiration', None)

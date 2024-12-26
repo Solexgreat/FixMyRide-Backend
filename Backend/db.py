@@ -21,15 +21,22 @@ class DB:
     def __init__(self, drop_tables=False) -> None:
         """Initialize a new DB instance"""
         database_url = os.getenv('DATABASE_URL')
-        self._engine = create_engine(database_url, echo=True)
+        if not database_url:
+            raise RuntimeError("DATABASE_URL environment variable is not set.")
+        try:
+            self._engine = create_engine(database_url, echo=True)
+            if drop_tables:
+                Base.metadata.drop_all(self._engine)
+            Base.metadata.create_all(self._engine)
+            self.Session = scoped_session(sessionmaker(bind=self._engine))
+        except Exception as e:
+            raise RuntimeError(f"Failed to connect to the database: {e}")
 
-        if drop_tables:
-            Base.metadata.drop_all(self._engine)
-
-        Base.metadata.create_all(self._engine)
-
-        # scoped_session for thread-safe sessions
-        self.Session = scoped_session(sessionmaker(bind=self._engine))
+    def init_app(self, app):
+        """Bind database to Flask app"""
+        app.teardown_appcontext(self.teardown)
+        app.engine = self._engine
+        app.session = self.Session
 
     @property
     def _session(self):

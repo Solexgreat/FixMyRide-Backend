@@ -37,6 +37,6 @@ class User(Base):
             'last_name': self.last_name,
             'user_name': self.user_name,
             'email': self.email,
-            'role': self.user_type,
+            'user_type': self.user_type,
             'is_active': self.is_active,
         }

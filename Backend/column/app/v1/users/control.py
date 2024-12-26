@@ -37,7 +37,7 @@ class UserControl(DB):
         users = self._session.query(User).all()
         return [u.to_dict() for u in users]
 
-    def add_user(self, **kwargs) -> User:
+    def add_user(self, **kwargs) -> dict:
         """Add a user to the session and commit"""
         try:
             user = User(**kwargs)
