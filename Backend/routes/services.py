@@ -87,7 +87,7 @@ def get_service_name()-> list:
         return jsonify({'message': str(e)}), 500
 
 @service_bp.route('/create_service', methods=['POST'], strict_slashes=False)
-@authenticate(roles=[User_Type_Enum.USER])
+@authenticate(roles=[User_Type_Enum.ADMIN])
 def create_service() ->str:
     """POST /revenue
        Return: Jsonify status 200

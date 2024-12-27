@@ -85,7 +85,7 @@ class ServiceControl(DB):
         except Exception as e:
             self._session.rollback()
             raise e
-        return service
+        return service.to_dict()
 
     def delete_service(self, service_id: str, seller_id: int)-> str:
         """Delete service by service_id"""
