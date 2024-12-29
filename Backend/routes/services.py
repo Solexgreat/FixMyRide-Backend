@@ -1,7 +1,4 @@
-from flask import Flask
-from flask import Flask, jsonify, request, abort, redirect, render_template, flash
-# from flask_login import login_user, logout_user, login_required, current_user, LoginManager
-# from .db import DB
+from flask import jsonify, request
 from sqlalchemy.exc import InvalidRequestError
 from ..column.app.v1.Services.control import ServiceControl
 from ..column.app.v1.users.model import UserTypeEnum
@@ -9,6 +6,7 @@ from ..column.app.v1.core.auth import AUTH
 from . import service_bp
 from ..db import DB
 from ..column.app.v1.core.middleware import authenticate
+from ..utils.cache import cache
 
 
 db_instance = DB()
@@ -31,10 +29,12 @@ def get_service() -> str:
         services = service_control.get_service()
         return jsonify({'services': services}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'message': str(e)}), 500
 
 @service_bp.route('/pupolar_services', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
+@cache.cached(timeout=160, query_string=True)
+@cache.cached(timeout=160)
 def get_popular_service() -> str:
     """Return all service
     """
@@ -46,11 +46,12 @@ def get_popular_service() -> str:
         services = service_control.get_popular_service()
         return jsonify(services), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'message': str(e)}), 500
 
 
 @service_bp.route('/categories', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
+@cache.cached(timeout=160)
 def get_categories()-> dict:
     """
         Return all categories
@@ -63,6 +64,7 @@ def get_categories()-> dict:
 
 @service_bp.route('/category_services', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
+@cache.cached(timeout=160, query_string=True)
 def get_category_services():
     """
         Return all categories
@@ -97,13 +99,13 @@ def create_service() ->str:
 
     try:
         if not data:
-            return jsonify({'msg': 'Expecting data'}), 400
+            return jsonify({'message': 'Expecting data'}), 400
 
         service_list = [service_control.add_service(**services) for services in data]
         service_list = [service['service_id'] for service in service_list  ]
         return jsonify({"message": "Service is Created", 'service_id': f'{service_list}'}), 201
     except Exception as e:
-        return jsonify({'msg': 'Internal error', 'error': str(e)}), 500
+        return jsonify({'message': 'Internal error', 'error': str(e)}), 500
 
 @service_bp.route('/delete/<int:service_id>', methods=['DELETE'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.ADMIN])

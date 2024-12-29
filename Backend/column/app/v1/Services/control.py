@@ -1,13 +1,11 @@
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.orm.session import Session
+import json
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 from .model import Service
 from typing import List
 from datetime import datetime
 from .....db import DB
+from .....utils.cache import redis_client
 
 
 class ServiceControl(DB):
@@ -23,10 +21,18 @@ class ServiceControl(DB):
             Return:
              List of  all categories as dictionaries
         """
+        cache_key = "categories"
+
+        cached_categories = redis_client.get(cache_key)
+        if cached_categories:
+            return json.loads(cached_categories)
         try:
             services = self._session.query(Service).all()
             services_dict = [s.to_dict() for s in services]
             categories = {service['category'] for service in services_dict if 'category' in service}
+
+            # Cache the result with a TTL of 5 minutes
+            redis_client.setex(cache_key, 300, json.dumps(list(categories)))
 
             return list(categories)
         except Exception as e:
@@ -37,9 +43,20 @@ class ServiceControl(DB):
             Return:
                 List of all service for the provided category
         """
+
+        cache_key= f"service:{category}"
+        cached_service = redis_client.get(cache_key)
+        if cached_service:
+            return json.loads(cached_service)
         try:
             services = self._session.query(Service).filter(Service.category==category).all()
             services_dict = [s.to_dict() for s in services]
+
+            if len(services_dict) == 0:
+                raise NoResultFound(f"No services found for category: {category}")
+
+            # Cache the result with a TTL of 10 minutes
+            redis_client.setex(cache_key, 600, json.dumps(services_dict))
 
             return services_dict
         except Exception as e:
@@ -62,6 +79,10 @@ class ServiceControl(DB):
         Return:
                 A list of popular services
         """
+        cache_key = 'popular-service'
+        cache_services = redis_client.get(cache_key)
+        if cache_services:
+            return json.loads(cache_services)
         try:
             popula_services_list = ['Oil Change','Brake Pad Replacement', 'Battery Replacement', 'Tire Rotation']
 
@@ -71,6 +92,8 @@ class ServiceControl(DB):
                 service = self._session.query(Service).filter(Service.name==name).first()
                 if service:
                     services.append(service.to_dict())
+
+            redis_client.setex(cache_key, 600, json.dumps(services))
 
             return services
         except Exception as e:

@@ -7,6 +7,8 @@ from flask_mail import Mail
 from flask_cors import CORS
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from flask_caching import Cache
+
 
 
 db_instance = DB()
@@ -37,11 +39,6 @@ def create_app():
 	print(f"DEBUG Mode: {app.config['DEBUG']}")
 
 
-	# # Configure your secret key for encoding JWT
-	# app.config['JWT_SECRET_KEY'] = app.config['JWT_SECRET']
-
-	# # Initialize JWT manager
-	# jwt = JWTManager(app)
 
 	# Initialize Mail
 	mail.init_app(app)
