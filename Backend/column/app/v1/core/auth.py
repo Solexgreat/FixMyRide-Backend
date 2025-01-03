@@ -68,7 +68,7 @@ class AUTH:
            are valid
         """
         #check and verify user_name and email
-        user_name = kwargs.get('user_name')
+        user_name = kwargs.get('username')
         email = kwargs.get('email')
 
         if not email and not user_name:

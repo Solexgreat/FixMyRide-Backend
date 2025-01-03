@@ -25,12 +25,14 @@ class AppointmentControl(DB):
 
         try:
 
+            #Get all user appointment
+            appointments = self._session.query(Appointment).filter(Appointment.customer_id==user_id).all()
+            if not appointments:
+                raise NoResultFound(f'No appointment yet')
+
+            #Get all appointment if it an Admin request
             if role == 'admin':
                 appointments = self._session.query(Appointment).all()
-            elif role == 'mechanic':
-                appointments = self._session.query(Appointment).filter_by(mechanic_id=user_id).all()
-            else:
-                appointments = self._session.query(Appointment).filter_by(mechanic_id=user_id).all()
 
             return [a.to_dict() for a in appointments]
         except Exception as e:
@@ -46,14 +48,9 @@ class AppointmentControl(DB):
             if role == 'admin':
                 return appointment.to_dict()
 
-            #Get the mechanic_id and check if it exist
-            mechanic_id = appointment.mechanic_id
-            if not mechanic_id:
-                raise NoResultFound(f'Service or Mechanic no longer available')
-
             #Check if the user(mechanic or customer) is authorize to get appointment
             customer_id = appointment.customer_id
-            if user_id != mechanic_id or user_id != customer_id:
+            if user_id != customer_id:
                 raise InvalidRequestError(f'Unauthorized request')
 
             return appointment.to_dict()
@@ -100,20 +97,6 @@ class AppointmentControl(DB):
 
         return appointment
 
-    def get_appointment_between_dates(self, start_date_str: datetime, end_date_str: datetime):
-        """
-            Get appointments between a period of time
-        """
-        try:
-            start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
-            end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
-            appointments = self._session.query(Appointment).filter(
-                Appointment.date_time.between(start_date, end_date)
-            ).all()
-            appointments_dict = [appointment.to_dict() for appointment in appointments]
-            return appointments_dict
-        except Exception as e:
-            raise Exception(f'{str(e)}')
 
     def get_completed_appointment_between_dates(self, start_date_str: str, end_date_str: str):
         """
@@ -128,6 +111,25 @@ class AppointmentControl(DB):
                     Appointment.updated_date.between(start_date, end_date)
                 )
                 ).all()
+            appointments_dict = [appointment.to_dict() for appointment in appointments]
+            return appointments_dict
+        except Exception as e:
+            raise Exception(f'{str(e)}')
+
+    def get_appointment_history_between(self, user_Id: str, start_date_str: datetime, end_date_str: datetime):
+        """
+            Get appointments between a period of time
+        """
+        try:
+            start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
+            end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
+            appointments = self._session.query(Appointment).filter(
+                (Appointment.date_time.between(start_date, end_date))
+            ).filter(
+                ~(
+                    Appointment.customer_id==user_Id
+                )
+            ).all()
             appointments_dict = [appointment.to_dict() for appointment in appointments]
             return appointments_dict
         except Exception as e:

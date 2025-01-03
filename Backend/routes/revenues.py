@@ -12,7 +12,7 @@ from ..column.app.v1.users.model import UserTypeEnum
 
 
 User_Type_Enum = UserTypeEnum()
-db = RevenueControl()
+revenue_control = RevenueControl()
 db_instance = DB()
 AUTH = AUTH()
 
@@ -26,7 +26,7 @@ def get_revenue() -> str:
         user = request.user
         if user.role != 'admin':
             return jsonify({'msg': "Not authorized"}), 403
-        return jsonify(db.get_all_revenue()), 200
+        return jsonify(revenue_control.get_all_revenue()), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -50,7 +50,7 @@ def create_revenue() ->str:
             total_appointment = data['total_appointment']
             total_repairs = data['total_repairs']
             total_revenue = data['total_revenue']
-            revenue = db.add_revenue(date_time,
+            revenue = revenue_control.add_revenue(date_time,
                             total_appointment,
                             total_repairs,
                             total_revenue)
@@ -58,6 +58,25 @@ def create_revenue() ->str:
         except Exception as e:
             err_msg = "can't create appointment: {}".format(e)
     return jsonify({'err_msg': err_msg}), 400
+
+@revenue_bp.route('/history_between', methods=['GET'], strict_slashes=False)
+@authenticate(roles=[User_Type_Enum.ADMIN])
+def revenue_history_between() -> str:
+    """Render the appointment history page"""
+    try:
+        data = request.get_json()
+        initial_date = data.get('initial_date')
+        current_date = data.get('current_date')
+        role = request.user.role
+
+        #Check if user is an admin
+        if role != 'admin':
+            return jsonify({'msg': 'unauthorised user'}), 403
+
+        appointments = revenue_control.get_revenue_between_dates(initial_date, current_date)
+        return appointments
+    except Exception as e:
+        return jsonify({'error' : str(e)}), 500
 
 @revenue_bp.route('/delete/<int:revenue_id>', methods=['DELETE'], strict_slashes=False)
 @authenticate
@@ -71,7 +90,7 @@ def delete_revenue(revenue_id):
         user = request.user
         if user.role != 'admin':
             return jsonify({'msg': 'Not authorized'}), 403
-        del_service =db.delete_revenue(revenue_id)
+        del_service = revenue_control.delete_revenue(revenue_id)
         return jsonify(del_service), 200
     except Exception as e:
         return jsonify({'msg': str(e) }), 500

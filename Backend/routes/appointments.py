@@ -53,7 +53,7 @@ def appointment_history() -> str:
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-@appointment_bp.route('/history_between', methods=['GET'], strict_slashes=False)
+@appointment_bp.route('/between', methods=['GET'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_history_between() -> str:
     """Render the appointment history page"""
@@ -61,21 +61,17 @@ def appointment_history_between() -> str:
         data = request.get_json()
         initial_date = data.get('initial_date')
         current_date = data.get('current_date')
-        role = request.user.role
+        user_Id = request.user_id
 
-        #Check if user is an admin
-        if role != 'admin':
-            return jsonify({'msg': 'unauthorised user'}), 403
-
-        appointments = db.get_appointment_between_dates(initial_date, current_date)
+        appointments = db.get_appointment_history_between(user_Id, initial_date, current_date)
         return appointments
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-@appointment_bp.route('/completed_history_between', methods=['GET'], strict_slashes=False)
+@appointment_bp.route('/completed_between', methods=['GET'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_completed_between() -> str:
-    """Render the appointment history page"""
+    """Render the completed appointment history page"""
     try:
         data = request.get_json()
         initial_date = data.get('initial_date')
@@ -94,7 +90,7 @@ def appointment_completed_between() -> str:
 @appointment_bp.route('/appointment/<int:appointment_id>', methods=['GET'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.ADMIN])
 def get_appointment(appointment_id) -> str:
-    """Return json of all appointments
+    """Return json of an appointments
     """
     user = request.user
     role = user.role

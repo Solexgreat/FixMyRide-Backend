@@ -6,7 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
 from .model import Revenue
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta
 from .....db import DB
 
 
@@ -39,3 +39,18 @@ class RevenueControl(DB):
         except Exception as e:
             self._session.rollback()
             raise Exception(f'An error occured: {e}')
+
+    def get_revenue_between_dates(self, start_date_str: datetime, end_date_str: datetime):
+        """
+            Get appointments between a period of time
+        """
+        try:
+            start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
+            end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
+            appointments = self._session.query(Revenue).filter(
+                Revenue.date_time.between(start_date, end_date)
+            ).all()
+            appointments_dict = [appointment.to_dict() for appointment in appointments]
+            return appointments_dict
+        except Exception as e:
+            raise Exception(f'{str(e)}')
