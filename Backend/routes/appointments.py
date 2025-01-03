@@ -40,8 +40,8 @@ def Create_appointment() -> str:
     except Exception as e:
         return jsonify({'msg': 'Internal error', 'error': str(e)}), 500
 
-@appointment_bp.route('/appointment/history', methods=['GET'], strict_slashes=False)
-@authenticate(roles=[User_Type_Enum.ADMIN])
+@appointment_bp.route('/', methods=['GET'], strict_slashes=False)
+@authenticate(roles=[User_Type_Enum.USER])
 def appointment_history() -> str:
     """Render the appointment history page"""
     try:
@@ -53,7 +53,7 @@ def appointment_history() -> str:
     except Exception as e:
         return jsonify({'error' : str(e)}), 500
 
-@appointment_bp.route('/between', methods=['GET'], strict_slashes=False)
+@appointment_bp.route('/history_between', methods=['GET'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.ADMIN])
 def appointment_history_between() -> str:
     """Render the appointment history page"""

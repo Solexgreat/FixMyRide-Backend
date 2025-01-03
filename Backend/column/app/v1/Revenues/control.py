@@ -14,8 +14,20 @@ class RevenueControl(DB):
     """Revenue control class that inherits from DB"""
     def get_all_revenue(self) -> list:
         """Retrieve all revenue records from the database."""
-        revenues = self._session.query(Revenue).all()
-        return [r.to_dict() for r in revenues]
+
+        try:
+            revenues = self._session.query(Revenue).all()
+            revenues_dict =  [revenue.to_dict() for revenue in revenues]
+
+             #Calculate the total repair revenue
+            total_repair_revenue = sum(revenue.get('repair_price', 0) for revenue in revenues_dict)
+
+            # Append total repair revenue to the result
+            return {"revenues": revenues_dict, "total_repair_revenue": total_repair_revenue}
+
+        except Exception as e:
+            # Include the traceback for easier debugging
+            raise Exception(f"Error in get_revenue_between_dates: {str(e)}")
 
     def add_revenue(self, date_time: datetime, total_appointment: int,
                     total_repair: int, total_revenue: int) -> Revenue:
@@ -47,10 +59,15 @@ class RevenueControl(DB):
         try:
             start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
             end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
-            appointments = self._session.query(Revenue).filter(
+            revenues= self._session.query(Revenue).filter(
                 Revenue.date_time.between(start_date, end_date)
             ).all()
-            appointments_dict = [appointment.to_dict() for appointment in appointments]
-            return appointments_dict
+            revenues_dict = [revenue.to_dict() for revenue in revenues]
+
+            #Calculate the total repair revenue
+            total_repair_revenue = sum(revenue.get('repair_price', 0) for revenue in revenues_dict)
+
+            # Append total repair revenue to the result
+            return {"revenues": revenues_dict, "total_repair_revenue": total_repair_revenue}
         except Exception as e:
             raise Exception(f'{str(e)}')

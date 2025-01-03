@@ -22,4 +22,6 @@ class Repair(Base):
             'repair_id': self.repair_id,
             'customer_id': self.customer_id,
             'service_id': self.service_id,
+            'service_name': self.service.name if self.service else None,
+            'price': self.service.price if self.servcie else None
         }

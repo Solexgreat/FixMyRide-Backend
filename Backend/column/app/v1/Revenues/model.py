@@ -22,7 +22,8 @@ class Revenue(Base):
         return {
             'date': self.date_time,
             'revenue_id': self.revenue_id,
-            'total_revenue': self.total_revenue,
             'total_appointments': self.total_appointments,
-            'total_repairs': self.total_repairs
+            'total_repairs': self.total_repairs,
+            'repair_price': self.repair.service.price if self.repair and self.repair.service else None,
+            'repair_name': self.repair.service.name if self.repair and self.repair.service else None
         }

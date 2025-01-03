@@ -17,7 +17,7 @@ db_instance = DB()
 AUTH = AUTH()
 
 
-@revenue_bp.route('/revenue', methods=['GET'], strict_slashes=False)
+@revenue_bp.route('/', methods=['GET'], strict_slashes=False)
 @authenticate(roles=[User_Type_Enum.USER])
 def get_revenue() -> str:
     """Return all the Revenue property
