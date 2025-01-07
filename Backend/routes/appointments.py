@@ -16,25 +16,21 @@ auth = AUTH()
 
 
 @appointment_bp.route('/appointments', methods=['POST'], strict_slashes = False)
-@authenticate(roles=[User_Type_Enum.ADMIN])
 def Create_appointment() -> str:
     """POST /appoitments
        Return:
        json obj with status 201
     """
     data = request.get_json()
-    user_id = request.user.user_id
 
     try:
     # db_instance.drop_column('appointments', 'model')
     # db_instance.add_column('appointments', 'date', 'TEXT')
         date = data.get('date')
         time = data.get('time')
-        customer_id = data.get('customer_id')
         service_id = data.get('service_id')
         status = data.get('status')
         appointment = db.add_appointment(date, time,
-                            customer_id,
                             service_id, status)
         return jsonify({"message": "sucessfully created", 'appointment_id': f'{appointment.appointment_id}'}), 201
     except Exception as e:

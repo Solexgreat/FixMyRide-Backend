@@ -6,6 +6,8 @@ service_bp = Blueprint('services', __name__, url_prefix='/services')
 revenue_bp = Blueprint('revenues', __name__, url_prefix='/revenues')
 repair_bp = Blueprint('repairs', __name__, url_prefix='/repairs')
 appointment_bp = Blueprint('appointments', __name__, url_prefix='/appointments')
+payment_bp = Blueprint('payments', __name__, url_prefix='/payments')
+
 
 # Import the routes
 from .users import *
@@ -14,3 +16,4 @@ from .repairs import *
 from .revenues import *
 from .appointments import *
 from .auths import *
+from .payment import *

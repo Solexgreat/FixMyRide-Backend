@@ -30,11 +30,11 @@ def create_app():
 	env = os.getenv('FLASK_ENV', 'production')
 
 	if env == 'development':
-		app.config.from_object('config.DevelopmentConfig')
+		app.config.from_object('Backend.config.DevelopmentConfig')
 	elif env == 'production':
-		app.config.from_object('config.ProductionConfig')
+		app.config.from_object('Backend.config.ProductionConfig')
 	else:
-		app.config.from_object('config.ProductionConfig')
+		app.config.from_object('Backend.config.ProductionConfig')
 
 	print(f"DEBUG Mode: {app.config['DEBUG']}")
 

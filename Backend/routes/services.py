@@ -33,8 +33,8 @@ def get_service() -> str:
 
 @service_bp.route('/pupolar_services', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
-@cache.cached(timeout=160, query_string=True)
-@cache.cached(timeout=160)
+@cache.cached(timeout=600, query_string=True)
+@cache.cached(timeout=660)
 def get_popular_service() -> str:
     """Return all service
     """
@@ -51,7 +51,7 @@ def get_popular_service() -> str:
 
 @service_bp.route('/categories', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
-@cache.cached(timeout=160)
+@cache.cached(timeout=600)
 def get_categories()-> dict:
     """
         Return all categories

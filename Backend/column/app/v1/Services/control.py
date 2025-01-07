@@ -32,7 +32,7 @@ class ServiceControl(DB):
             categories = {service['category'] for service in services_dict if 'category' in service}
 
             # Cache the result with a TTL of 5 minutes
-            redis_client.setex(cache_key, 300, json.dumps(list(categories)))
+            redis_client.setex(cache_key, 600, json.dumps(list(categories)))
 
             return list(categories)
         except Exception as e:

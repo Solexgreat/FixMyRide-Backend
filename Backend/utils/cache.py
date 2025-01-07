@@ -1,10 +1,15 @@
 from flask import Flask
 import redis
+import os
 import json
 from flask_caching import Cache
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Configure Redis client
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+redis_host=os.getenv('REDIS_HOST')
+redis_client = redis.StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 def cache_set(key, value, ttl):
     """Set a key-value pair in Redis with a TTL"""
