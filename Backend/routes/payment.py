@@ -3,9 +3,6 @@ import stripe
 # from torch import device
 from . import payment_bp
 
-app = Flask(__name__, static_url_path="", static_folder="public")
-# Your_Domain =
-
 
 @payment_bp.route('/checkout-session', methods=['POST'], strict_slashes=False)
 def create_checkout_session():
