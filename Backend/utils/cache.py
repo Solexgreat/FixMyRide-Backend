@@ -9,7 +9,7 @@ load_dotenv()
 
 # Configure Redis client
 redis_host=os.getenv('REDIS_HOST')
-redis_client = redis.StrictRedis(host=redis_host, port=6379, db=0, decode_responses=True)
+redis_client = redis.StrictRedis.from_url(redis_host, decode_responses=True, ssl_cert_reqs=None)
 
 def cache_set(key, value, ttl):
     """Set a key-value pair in Redis with a TTL"""
@@ -24,10 +24,8 @@ app = Flask(__name__)
 
 # Configure Flask-Caching
 app.config['CACHE_TYPE'] = 'RedisCache'  # Use Redis for caching
-app.config['CACHE_REDIS_HOST'] = 'localhost'
-app.config['CACHE_REDIS_PORT'] = 6379
-app.config['CACHE_REDIS_DB'] = 0
-app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # Default TTL: 5 minutes
+app.config['CACHE_REDIS_URL'] = redis_host
+app.config['CACHE_DEFAULT_TIMEOUT'] = 400
 
 cache = Cache(app)
 

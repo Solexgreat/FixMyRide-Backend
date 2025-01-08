@@ -31,10 +31,9 @@ def get_service() -> str:
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
-@service_bp.route('/pupolar_services', methods=['GET'], strict_slashes=False)
+@service_bp.route('/popular_services', methods=['GET'], strict_slashes=False)
 # @authenticate(roles=[User_Type_Enum.ADMIN])
 @cache.cached(timeout=600, query_string=True)
-@cache.cached(timeout=660)
 def get_popular_service() -> str:
     """Return all service
     """
