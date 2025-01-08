@@ -15,7 +15,7 @@ db = AppointmentControl()
 auth = AUTH()
 
 
-@appointment_bp.route('/appointments', methods=['POST'], strict_slashes = False)
+@appointment_bp.route('/create', methods=['POST'], strict_slashes = False)
 def Create_appointment() -> str:
     """POST /appoitments
        Return:
