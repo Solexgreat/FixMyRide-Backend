@@ -36,7 +36,7 @@ def create_checkout_session():
             cancel_url = 'http://localhost:3000/cancel',
         )
 
-        return jsonify({'id': checkout_session.id})
+        return jsonify({'id': checkout_session.id}), 200
     except Exception as e:
         return jsonify({'error': str(e) }), 400
 
