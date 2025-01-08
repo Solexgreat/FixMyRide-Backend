@@ -57,14 +57,14 @@ class AppointmentControl(DB):
         except Exception as e:
             raise (f'{e}')
 
-    def add_appointment(self, date: str, time: str, customer_id: int, service_id: int, status: str) -> Appointment:
+    def add_appointment(self, date: str, time: str, service_id: int, status: str) -> Appointment:
         """Add an appointment and update revenue"""
 
         try:
             # Combine date and time into a datetime object
             date_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
             # Create a new appointment
-            appointment = Appointment(date_time=date_time, customer_id=customer_id,
+            appointment = Appointment(date_time=date_time,
                                       service_id=service_id, status=status)
             self._session.add(appointment)
             self._session.commit()
