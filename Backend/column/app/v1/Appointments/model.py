@@ -19,9 +19,9 @@ class Appointment(Base):
 
     def to_dict(self):
         return {
+            'appointment_id': self.appointment_id,
             'date': self.date_time,
             'status': self.status,
-            'customer_id': self.customer_id,
             'service_id': self.service_id,
             'updated_date': self.updated_date
         }

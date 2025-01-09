@@ -62,7 +62,7 @@ class AppointmentControl(DB):
 
         try:
             # Combine date and time into a datetime object
-            date_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+            date_time = datetime.strptime(f"{date} {time}", "%a, %d %b %Y %H:%M:%S")
             # Create a new appointment
             appointment = Appointment(date_time=date_time,
                                       service_id=service_id, status=status)
@@ -165,7 +165,7 @@ class AppointmentControl(DB):
         all_slots = self.generate_time_slots(540, 1020)
 
         try:
-            date = datetime.strptime(date_str, "%Y-%m-%d")
+            date = datetime.strptime(date_str, "%a, %d %b %Y")
             start_of_day = datetime.combine(date, datetime.min.time())
             end_of_day = datetime.combine(date, datetime.max.time())
 
