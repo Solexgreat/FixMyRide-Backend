@@ -62,7 +62,7 @@ class AppointmentControl(DB):
 
         try:
             # Combine date and time into a datetime object
-            date_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
+            date_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
             # Create a new appointment
             appointment = Appointment(date_time=date_time,
                                       service_id=service_id, status=status)

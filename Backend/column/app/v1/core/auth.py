@@ -33,7 +33,7 @@ class AUTH:
 
             user = self._db.find_user('email', email)
             if user:
-               raise ValueError (f"{user.user_name} already exits ")
+               raise ValueError (f"{user.email} already exits ")
 
             #validate and hash password
             password = kwargs.get('password')

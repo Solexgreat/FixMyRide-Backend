@@ -21,7 +21,7 @@ def load_user(user_id):
     if user is None:
         return None
 
-@user_bp.route('/register', methods=['POST'], strict_slashes=False)
+@user_bp.route('/signup', methods=['POST'], strict_slashes=False)
 def register_user() -> str:
     """Creat new user
     """
