@@ -62,7 +62,7 @@ class AppointmentControl(DB):
 
         try:
             # Combine date and time into a datetime object
-            date_time = datetime.strptime(f"{date} {time}", "%a, %d %b %Y %H:%M:%S")
+            date_time = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M:%S")
             # Create a new appointment
             appointment = Appointment(date_time=date_time,
                                       service_id=service_id, status=status)
@@ -103,8 +103,8 @@ class AppointmentControl(DB):
             Get appointments with 'status' complete between a period of time
         """
         try:
-            start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
-            end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d") + timedelta(days=1)
             appointments = self._session.query(Appointment).filter(
                 and_(
                     Appointment.status == 'completed',
@@ -121,8 +121,8 @@ class AppointmentControl(DB):
             Get appointments between a period of time
         """
         try:
-            start_date = datetime.strptime(start_date_str, "%a, %d %b %Y")
-            end_date = datetime.strptime(end_date_str, "%a, %d %b %Y") + timedelta(days=1)
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d") + timedelta(days=1)
             appointments = self._session.query(Appointment).filter(
                 (Appointment.date_time.between(start_date, end_date))
             ).filter(
@@ -165,7 +165,7 @@ class AppointmentControl(DB):
         all_slots = self.generate_time_slots(540, 1020)
 
         try:
-            date = datetime.strptime(date_str, "%a, %d %b %Y")
+            date = datetime.strptime(date_str, "%Y-%m-%d")
             start_of_day = datetime.combine(date, datetime.min.time())
             end_of_day = datetime.combine(date, datetime.max.time())
 
