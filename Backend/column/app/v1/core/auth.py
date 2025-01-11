@@ -57,7 +57,7 @@ class AUTH:
 
         except ValueError as ve:
             logger.exception("ValueError occurred during user registration:", exc_info=ve)
-            raise ve
+            raise ValueError(ve)
         except Exception as e:
             logger.exception("An error occurred during user registration:", exc_info=e)
             raise Exception("User registration failed")

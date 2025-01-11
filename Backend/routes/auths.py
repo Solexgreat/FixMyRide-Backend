@@ -1,5 +1,5 @@
 from flask_mail import Message
-from flask import Flask, jsonify, request, abort, redirect, render_template, flash
+from flask import Flask, jsonify, request, abort, make_response
 # from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 from ..column.app.v1.core.auth import AUTH
 from ..column.app.v1.core.security import SECURITY
@@ -35,7 +35,22 @@ def login():
 	data = request.get_json()
 	try:
 		user = auth.verify_login(**data)
-		return jsonify({'msg': "Login successful",'token': f'{user.session_id}' }), 201
+		response = make_response(jsonify({
+			'msg': "Login successful",
+			'token': f'{user.session_id}'
+		}), 201)
+
+        # Set the session_id cookie
+		response.set_cookie(
+			key='session_id',              # Cookie name
+			value=user.session_id,         # User's session ID as the cookie value
+			httponly=True,                 # Prevent JavaScript access
+			secure=False,                   # Only send the cookie over HTTPS
+			samesite='None',             # Adjust based on your needs: Strict, Lax, or None
+			max_age=36000                   # Cookie expiration
+		)
+
+		return response
 	except Exception as e:
 		return jsonify({'msg': str(e)}), 500
 

@@ -54,7 +54,7 @@ def appointment_history() -> str:
 def appointment_history_between() -> str:
     """Render the appointment history page"""
     try:
-        data = request.get_json()
+        data = request.args.get()
         initial_date = data.get('initial_date')
         current_date = data.get('current_date')
         user_Id = request.user_id
@@ -69,7 +69,7 @@ def appointment_history_between() -> str:
 def appointment_completed_between() -> str:
     """Render the completed appointment history page"""
     try:
-        data = request.get_json()
+        data = request.args.get()
         initial_date = data.get('initial_date')
         current_date = data.get('current_date')
         role = request.user.role

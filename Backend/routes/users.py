@@ -30,7 +30,7 @@ def register_user() -> str:
         user = auth.register_user(**data)
         return jsonify({'msg': f"{user['user_name']}, created successfully"}), 201
     except ValueError as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 409
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
