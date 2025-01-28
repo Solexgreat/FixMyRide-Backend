@@ -4,7 +4,7 @@ from ..users.control import UserControl
 from ..core.security import SECURITY
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
-DB = UserControl()
+user_control = UserControl()
 security = SECURITY()
 
 ACCESS_CONTROL = {
@@ -19,9 +19,10 @@ def authenticate(roles=None):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             try:
-                session_id = request.cookies.get("session_id")
+                session_id = request.cookies.get('session_id')
+                print(f"Session ID: {session_id}")
                 if session_id:
-                    user = DB.find_user_by_session_id(session_id)  # Check if session_id exists in the database
+                    user = user_control.find_user_by_session_id(session_id)  # Check if session_id exists in the database
 
                     if user and security.validate_session(user.email, user.session_id):
 
@@ -34,7 +35,7 @@ def authenticate(roles=None):
                     else:
                         return jsonify({"message": "Invalid session"}), 403
                 else:
-                    return jsonify({"message": "Token required"}), 403
+                    return jsonify({"message": "cookie session_id not set by the browser"}), 403
             except Exception as e:
                 raise Exception(f'{e}')
 

@@ -42,7 +42,7 @@ def appointment_history() -> str:
     """Render the appointment history page"""
     try:
         user_id = request.user.user_id
-        role = request.user.role
+        role = request.user.user_type
 
         appointments = db.get_all_appointments(user_id, role)
         return jsonify({'Appointments' : appointments}), 201

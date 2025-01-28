@@ -135,5 +135,8 @@ class UserControl(DB):
         """
             Get user via session_id
         """
-        user = self._session.query(User).filter_by(session_id=session_id).first()
-        return user
+        try:
+            user = self._session.query(User).filter_by(session_id=session_id).first()
+            return user
+        except Exception as e:
+            raise e

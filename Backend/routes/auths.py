@@ -37,6 +37,8 @@ def login():
 		user = auth.verify_login(**data)
 		response = make_response(jsonify({
 			'msg': "Login successful",
+			'user_type': user.user_type,
+			'first_name': user.first_name,
 			'token': f'{user.session_id}'
 		}), 201)
 
@@ -45,7 +47,7 @@ def login():
 			key='session_id',              # Cookie name
 			value=user.session_id,         # User's session ID as the cookie value
 			httponly=True,                 # Prevent JavaScript access
-			secure=False,                   # Only send the cookie over HTTPS
+			secure=True,                   # Only send the cookie over HTTPS
 			samesite='None',             # Adjust based on your needs: Strict, Lax, or None
 			max_age=36000                   # Cookie expiration
 		)

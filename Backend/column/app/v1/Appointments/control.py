@@ -25,26 +25,31 @@ class AppointmentControl(DB):
 
         try:
 
-            #Get all user appointment
-            appointments = self._session.query(Appointment).filter(Appointment.customer_id==user_id).all()
-            if not appointments:
-                raise NoResultFound(f'No appointment yet')
-
-            #Get all appointment if it an Admin request
+            #Get all user appointment based on the role
             if role == 'admin':
                 appointments = self._session.query(Appointment).all()
+            else:
+                appointments = self._session.query(Appointment).filter(Appointment.customer_id == user_id).all()
+
+             # Check if appointments exist
+            if not appointments:
+                raise NoResultFound('No appointments found.')
 
             return [a.to_dict() for a in appointments]
+        except NoResultFound as e:
+            raise NoResultFound(f'{e}')
         except Exception as e:
-            raise(f'{e}')
+            raise Exception(f'{e}')
 
     def get_appointments(self, appointment_id: int, user_id: int, role: str) -> dict:
         """Return a list of all appointments as dictionaries"""
         #Get appointment and verify if it exist
-        appointment = self._session.query(Appointment).filter_by(appointment_id=appointment_id).first()
-        if not appointment:
-            raise NoResultFound(f'Appointment with {appointment_id} does not exist')
+
         try:
+            appointment = self._session.query(Appointment).filter_by(appointment_id=appointment_id).first()
+            if not appointment:
+                raise NoResultFound(f'Appointment with {appointment_id} does not exist')
+
             if role == 'admin':
                 return appointment.to_dict()
 
@@ -55,7 +60,7 @@ class AppointmentControl(DB):
 
             return appointment.to_dict()
         except Exception as e:
-            raise (f'{e}')
+            raise Exception(f'{e}')
 
     def add_appointment(self, date: str, time: str, service_id: int, status: str) -> Appointment:
         """Add an appointment and update revenue"""
